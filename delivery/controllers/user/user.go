@@ -112,20 +112,6 @@ func (ac *UserController) GetByUid() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, common.ResponseUser(http.StatusOK, "Success get user", res))
 	}
 }
-func (ac *UserController) Search() echo.HandlerFunc {
-	return func(c echo.Context) error {
-
-		q := c.QueryParam("q")
-
-		res, err := ac.repo.Search(q)
-
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, common.ResponseUser(http.StatusInternalServerError, "internal server error for get all "+err.Error(), nil))
-		}
-
-		return c.JSON(http.StatusOK, common.ResponseUser(http.StatusOK, "Success Get all Room", res))
-	}
-}
 
 func (ac *UserController) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -137,33 +123,6 @@ func (ac *UserController) Update() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, common.ResponseUser(http.StatusBadRequest, "There is some problem from input", nil))
 		}
-
-		// resGet, errGet := ac.repo.GetById(user_uid)
-		// if errGet != nil {
-		// 	log.Info(resGet)
-		// }
-
-		// file, errO := c.FormFile("image")
-		// if errO != nil {
-		// 	log.Info(errO)
-		// } else if errO == nil {
-		// 	src, _ := file.Open()
-		// 	if resGet.Image != "" {
-		// 		var updateImage = resGet.Image
-		// 		updateImage = strings.Replace(updateImage, "https://airbnb-app.s3.ap-southeast-1.amazonaws.com/", "", -1)
-
-		// 		var resUp = utils.UpdateUpload(ac.conn, updateImage, src, *file)
-		// 		if resUp != "success to update image" {
-		// 			return c.JSON(http.StatusInternalServerError, common.InternalServerError(http.StatusInternalServerError, "There is some error on server"+resUp, nil))
-		// 		}
-		// 	} else if resGet.Image == "" {
-		// 		var image, errUp = utils.Upload(ac.conn, src, *file)
-		// 		if errUp != nil {
-		// 			return c.JSON(http.StatusBadRequest, common.BadRequest(http.StatusBadRequest, "Upload Failed", nil))
-		// 		}
-		// 		newUser.Image = image
-		// 	}
-		// }
 
 		res, err_repo := ac.repo.Update(userUid, entities.User{
 			Name:     newUser.Name,
@@ -203,19 +162,7 @@ func (ac *UserController) Delete() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, common.ResponseUser(http.StatusOK, "Success delete user", nil))
 	}
 }
-func (ac *UserController) Dummy() echo.HandlerFunc {
-	return func(c echo.Context) error {
 
-		q, _ := strconv.Atoi(c.QueryParam("length"))
-
-		result := ac.repo.Dummy(q)
-		if !result {
-			return c.JSON(http.StatusInternalServerError, common.ResponseUser(http.StatusInternalServerError, "There is some error on server", nil))
-		}
-		return c.JSON(http.StatusOK, common.ResponseUser(http.StatusOK, "Success create user dummy", nil))
-
-	}
-}
 func (c *UserController) TimeToUser(timeInt int64) string {
 	if timeInt <= 0 {
 		return ""
